@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>build (Profligacy::Swing::Build)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../../../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre>     <span class="ruby-comment cmt"># File lib/profligacy/swing.rb, line 135</span>
+135:       <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">build</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">args</span>)
+136:         <span class="ruby-comment cmt"># create the container they ask for with these args</span>
+137:         <span class="ruby-ivar">@container</span> = <span class="ruby-ivar">@container_class</span>.<span class="ruby-identifier">new</span> <span class="ruby-operator">*</span><span class="ruby-identifier">args</span>
+138:         <span class="ruby-comment cmt"># tack on the layout they wanted</span>
+139:         <span class="ruby-ivar">@container</span>.<span class="ruby-identifier">layout</span> = <span class="ruby-identifier">layout</span> <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">layout</span>
+140: 
+141:         <span class="ruby-comment cmt"># go through all the children, add them on and tack on the callbacks</span>
+142:         <span class="ruby-ivar">@children</span>.<span class="ruby-identifier">each</span> {<span class="ruby-operator">|</span><span class="ruby-identifier">child</span><span class="ruby-operator">|</span>
+143:           <span class="ruby-keyword kw">if</span> <span class="ruby-ivar">@contents</span>[<span class="ruby-identifier">child</span>]
+144:             <span class="ruby-comment cmt"># if this component answers the each call then go through all</span>
+145:             <span class="ruby-identifier">component</span> = <span class="ruby-ivar">@contents</span>[<span class="ruby-identifier">child</span>]
+146:             <span class="ruby-identifier">each_or_one</span>(<span class="ruby-identifier">component</span>) {<span class="ruby-operator">|</span><span class="ruby-identifier">c</span><span class="ruby-operator">|</span> <span class="ruby-ivar">@container</span>.<span class="ruby-identifier">add</span>(<span class="ruby-identifier">c</span>) }
+147: 
+148:             <span class="ruby-identifier">configure_interactions_for</span> <span class="ruby-identifier">child</span>, <span class="ruby-identifier">component</span>
+149:           <span class="ruby-keyword kw">end</span>
+150:         }
+151: 
+152:         <span class="ruby-comment cmt"># yield to the caller so that they can configure more before</span>
+153:         <span class="ruby-comment cmt"># we make it visible and pack it</span>
+154:         <span class="ruby-keyword kw">yield</span> <span class="ruby-ivar">@container</span> <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">block_given?</span>
+155: 
+156:         <span class="ruby-comment cmt"># even though swing doesn't do this, we do</span>
+157:         <span class="ruby-ivar">@container</span>.<span class="ruby-identifier">pack</span> <span class="ruby-keyword kw">if</span> <span class="ruby-ivar">@container</span>.<span class="ruby-identifier">respond_to?</span> <span class="ruby-identifier">:pack</span>
+158:         <span class="ruby-ivar">@container</span>.<span class="ruby-identifier">visible</span> = <span class="ruby-keyword kw">true</span> <span class="ruby-keyword kw">if</span> <span class="ruby-ivar">@container</span>.<span class="ruby-identifier">respond_to?</span> <span class="ruby-identifier">:visible</span>
+159: 
+160:         <span class="ruby-comment cmt"># and now they can do whatever they want to the container</span>
+161:         <span class="ruby-ivar">@container</span>
+162:       <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

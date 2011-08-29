@@ -1,0 +1,143 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/2001/REC-xhtml11-20010531/DTD/xhtml11-flat.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Language" content="en-gb" />
+    <meta http-equiv="Content-Type" content="text/html; charset=windows-1252" />
+    <link rel="stylesheet" href="default.css" type="text/css" media="screen" />
+    <title>Profligacy: profligacy</title>
+  </head>
+  <body>
+
+    <div id="content">
+      <div id="search">
+      </div>
+      <div id="header">
+        <h1>Profligacy</h1>
+        <p>the world needs less swing</p>
+      </div>
+
+      <div id="body">
+        <div id="links">
+          <p>
+          <a href="index.html">home</a><br/>
+          about Profligacy
+          <br/><br/>
+          <a href="docs.html">docs</a><br/>
+          API and other info
+          <br/><br/>
+          <a href="sample.html">sample</a><br/>
+          get the idea
+          <br/><br/>
+          <a href="lel.html">LEL</a><br/>
+          cream for layouts
+          <br/><br/>
+          <a href="project.html">project</a><br/>
+          rubyforge project page
+          <br/><br/>
+          <a href="credit.html">credit</a><br/>
+          people who helped
+          <br/><br/>
+          <a href="profligacy.html">origins</a><br/>
+          what a stupid name
+          <br/><br/>
+          <a href="/">iHate...</a><br/>
+          uses this
+          <br/><br/>
+          </p>
+        </div>
+        <div id="main">
+          <h2>Profligacy <sub><em>( the swing reducer )</em></sub></h2>
+
+
+	<p>Profligacy is a JRuby library that makes building <a href="http://java.sun.com/docs/books/tutorial/uiswing/">Swing</a>
+Graphical User Interface <strong>much</strong> easier than with Raw code.  It&#8217;s not
+a builder as with many other projects, but instead a simple Ruby way
+to structure the UI for the 80% common cases you&#8217;ll encounter.</p>
+
+
+	<p>It&#8217;s actively used in the <a href="http://savingtheinternetwithhate.com/">Utu</a>
+<a href="http://ihate.rubyforge.org/">iHate</a> client.  iHate started as a 
+RubyCocoa project and then convert to JRuby and Swing.</p>
+
+
+	<p>The purpose of Profligacy is <strong>not</strong> to be a complete way of hiding
+Swing components from you.  You&#8217;ll still be making JButtons and 
+JLabels, you&#8217;ll just be putting them into a Ruby idiomatic code
+structure that doesn&#8217;t make your eyes hemorrhage diarrhea like when
+you try to code in Java.</p>
+
+
+	<p>The only real innovation in Profligacy is a simpler way to configure
+a <a href="http://java.sun.com/javase/6/docs/api/javax/swing/GroupLayout.html">GroupLayout</a>
+using a simple regex/wiki style syntax.  This is a work in progress, but
+it should make building GUIs much much easier.</p>
+
+
+	<h2>Features</h2>
+
+
+	<ul>
+	<li>Doesn&#8217;t hide swing from you so you have full access to components.</li>
+		<li>Separates the components from the interactions for clarity.</li>
+		<li>Decouples the layout from the component building so you can build in any order you like.</li>
+		<li>Hides the ugliness and complexity of Java&#8217;s Listener and Runnables.</li>
+		<li>Allows for simplified Ruby proc or method based callbacks.</li>
+		<li>Slick layout mechanism called <a href="lel.html"><span class="caps">LEL</span></a> that makes it easy to do big stuff.</li>
+		<li>You don&#8217;t have to use it and are expected to do complex components directly.</li>
+	</ul>
+
+
+	<h2>Installation</h2>
+
+
+	<p>The best way to install Profligacy is through the JRuby version of 
+RubyGems (adjusting for wherever <strong>your</strong> jruby/bin is located):</p>
+
+
+	<pre><code>/opt/jruby/bin/gem install profligacy</code></pre>
+
+
+	<p>However, that causes some problems somtimes with an Out-of-Memory error
+so you can get the files from <a href="http://rubyforge.org/frs/?group_id=3605">the project page</a>
+and install them directly with:</p>
+
+
+	<pre><code>/opt/jruby/bin/gem install profligacy-VERSION-jruby.gem</code></pre>
+
+
+	<p>Where <em><span class="caps">VERSION</span></em> would be the latest.</p>
+
+
+	<h2>Getting Started</h2>
+
+
+	<p>Just check out the <a href="sample.html">samples</a> for a few examples and read
+the <a href="/rdoc/">RDoc</a> to get started.</p>
+
+
+	<h2>The Author</h2>
+
+
+	<p>Profligacy is written by <a href="http://www.zedshaw.com/">Zed A. Shaw</a></p>
+
+
+	<h2>The License</h2>
+
+
+	<p>While the Utu project is <span class="caps">GPL</span> licensed, Profligacy is Ruby licensed
+so that anyone can use it.</p>
+
+
+	<h2>Why Not Cheri?</h2>
+
+
+	<p><a href="/profligacy/cheri_constants.rb">This file</a> from the <a href="http://cheri.rubyforge.org/">Cheri</a> project is why.</p>
+        </div>
+      </div>
+      <div id="footer">
+        Copyright © 2007 Zed A. Shaw. All Rights Reserved.<br/>
+        Design by <a href="http://www.mdibb.net" title="Website of Matt Dibb">Matt Dibb</a> 2006.
+      </div>
+    </div>
+  </body>
+</html>

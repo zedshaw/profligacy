@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>build (Profligacy::Swing::LEL)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../../../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre>     <span class="ruby-comment cmt"># File lib/profligacy/lel.rb, line 214</span>
+214:       <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">build</span>(<span class="ruby-identifier">prefs</span>={})
+215:         <span class="ruby-identifier">prefs</span> = <span class="ruby-ivar">@prefs</span>.<span class="ruby-identifier">merge</span> <span class="ruby-identifier">prefs</span>
+216: 
+217:         <span class="ruby-ivar">@container</span> = <span class="ruby-ivar">@container_class</span>.<span class="ruby-identifier">new</span>(<span class="ruby-operator">*</span>(<span class="ruby-identifier">prefs</span>[<span class="ruby-identifier">:args</span>]))
+218:         <span class="ruby-identifier">pane</span> = <span class="ruby-ivar">@container</span>.<span class="ruby-identifier">respond_to?</span>(<span class="ruby-identifier">:content_pane</span>) <span class="ruby-operator">?</span> <span class="ruby-ivar">@container</span>.<span class="ruby-identifier">content_pane</span> <span class="ruby-operator">:</span> <span class="ruby-ivar">@container</span>
+219:         <span class="ruby-identifier">layout</span> = <span class="ruby-constant">GroupLayout</span>.<span class="ruby-identifier">new</span> <span class="ruby-identifier">pane</span>
+220:         <span class="ruby-ivar">@container</span>.<span class="ruby-identifier">layout</span> = <span class="ruby-identifier">layout</span>
+221:         <span class="ruby-identifier">layout</span>.<span class="ruby-identifier">autocreate_gaps</span> = <span class="ruby-identifier">prefs</span>[<span class="ruby-identifier">:auto_create_gaps</span>] 
+222:         <span class="ruby-identifier">layout</span>.<span class="ruby-identifier">autocreate_container_gaps</span> = <span class="ruby-identifier">prefs</span>[<span class="ruby-identifier">:auto_create_container_gaps</span>] 
+223:         <span class="ruby-identifier">layout</span>.<span class="ruby-identifier">honors_visibility</span> = <span class="ruby-identifier">prefs</span>[<span class="ruby-identifier">:honors_visibility</span>]
+224: 
+225:         <span class="ruby-identifier">parse</span>(<span class="ruby-constant">LELGroupLayout</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">layout</span>, <span class="ruby-ivar">@contents</span>))
+226: 
+227:         <span class="ruby-ivar">@children</span>.<span class="ruby-identifier">each</span> {<span class="ruby-operator">|</span><span class="ruby-identifier">child</span><span class="ruby-operator">|</span>
+228:           <span class="ruby-identifier">configure_interactions_for</span>(<span class="ruby-identifier">child</span>,<span class="ruby-ivar">@contents</span>[<span class="ruby-identifier">child</span>]) <span class="ruby-keyword kw">if</span> <span class="ruby-ivar">@contents</span>[<span class="ruby-identifier">child</span>]
+229:         }
+230: 
+231:         <span class="ruby-keyword kw">yield</span> <span class="ruby-ivar">@container</span> <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">block_given?</span>
+232: 
+233:         <span class="ruby-ivar">@container</span>.<span class="ruby-identifier">pack</span> <span class="ruby-keyword kw">if</span> (<span class="ruby-identifier">prefs</span>[<span class="ruby-identifier">:pack</span>] <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-ivar">@container</span>.<span class="ruby-identifier">respond_to?</span>(<span class="ruby-identifier">:pack</span>))
+234:         <span class="ruby-ivar">@container</span>.<span class="ruby-identifier">visible</span> = <span class="ruby-identifier">prefs</span>[<span class="ruby-identifier">:visible</span>] <span class="ruby-keyword kw">if</span> <span class="ruby-ivar">@container</span>.<span class="ruby-identifier">respond_to?</span> <span class="ruby-identifier">:visible</span>
+235:         <span class="ruby-ivar">@container</span>
+236:       <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

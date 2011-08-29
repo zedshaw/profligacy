@@ -1,0 +1,429 @@
+---
+title: LEL
+inMenu: true
+directoryName: LEL
+---
+h2. Layout Expression Language
+
+Profligacy lets you build any Swing GUI you'd like using the standard
+containers and layout mechanisms.  However, most of those are difficult
+to code and truly only exist to support companies who sell tools.
+
+In order to break programmer's dependence on the IDE opiate, Profligacy
+includes a unique layout method called _Layout Expression Language_ or
+just LEL.  It's similar to a regex for layout that looks and works like
+tables do in a Wiki.  Using a very simple small little syntax for how
+cells in a component are organized, the programmer can develop the
+interface without special tools.
+
+h3. Wiki Like Regex
+
+If you've ever used "RedCloth":http://whytheluckystiff.net/ruby/redcloth/
+to do tables you'll probably know what I mean right away.  Most wiki
+systems (like RedCloth) have a table layout that looks like this:
+
+<blockquote>
+<pre>
+ |apples|oranges|pears|
+ |100   |50     |30   |
+</pre>
+</blockquote>
+
+You'll get different formatting options and appearance depending on how
+advanced the tables can be.
+
+LEL is very similar, but it works to organize and *name* the _cells_
+that make up the places components should fill.  Here's an example 
+expression that's laid out similar to a wiki table:
+
+<blockquote>
+<pre>
+ [ label_1        | label3           ]
+ [ (300,300)*text1| (150)people      ]
+ [ <label2        | _                ]
+ [ message        | buttons          ]
+</pre>
+</blockquote>
+
+Right away you can see:
+
+* This is a grid of 4 rows by 2 columns.
+* Some of the cells have names in them like "label_1", "people".
+* Before some names there's modifiers.
+** (150) sets _people_ to be 150 pixels wide.
+** (300,300) sets _text1_ to be 300 by 300 pixels in size.
+** '<' and '>' align the cell left or right.
+** '@*@' tells that cell to expand taking all available space.
+** '^' and '.' make that component align top or bottom.
+* One of the cells has just a '_' for the name.  This makes it empty.
+
+Once you have a layout like this (and this chunk of code would actually
+work) you'd then fill in all the cells with their components.  Since
+the LELParser knows where everything already is, you can load these
+components in any order that makes sense.  No more struggling to 
+force things into a certain ordering just to keep a layout manager
+happy.  Nice and flat.
+
+How all this is done depends on a little bit of theory.
+
+h3. Theory Behind LEL
+
+You really don't need to know this to use LEL, but it helps to
+understand what's going on and why it works.  In fact, I'm kind of
+amazed it actually works myself.  Just shows you what picking a good
+algorithm can do.
+
+The basis of LEL is constraint programming.  All layout managers
+are simply trying to balance a large constraint solving problem
+that determines the size of cells in a grid.  It's a solved problem,
+and there's libraries to do it, but these libraries are usually
+more difficult to use than the already difficult layout managers.
+
+When you look at a constraint matrix, it actually looks like a 
+table that gets built when you compile a regular expression or a
+parser grammar.  It's a big matrix with a series of constraints and
+transitions in it (roughly, shut up, I know this).
+
+If a regex like @/^[0-9]([a-zA-Z_]*)$/@ can be compiled into a
+table of state transitions, why can't a similar language be developed
+for constraint solving problems?
+
+However, trying to do a layout with something like the above regex would
+be very painful.  I'm sure it would attract super smart people, but there's
+not too many of those.  The next best language for composing a table
+that's visual is (you guessed it) the syntax that wiki sites use.
+
+With just a few simple tweaks to the syntax, a parser that can process
+the syntax to configure a "Swing GroupLayout":http://java.sun.com/javase/6/docs/api/javax/swing/GroupLayout.html
+and a way to plug the components into the grid, we have a fully functioning
+layout language.
+
+Simple!  Ok, maybe not but like you need to really know this.  Take a
+look at the code though to the parser, it's pretty simple:
+
+
+<blockquote>
+<pre>
+col = "|";
+ltab = "[";
+rtab = "]";
+valign = ("^" | ".");
+expand = "*";
+halign = ("<" | ">");
+number =  digit+;
+setw = ("(" number ("," number)? ")") ;
+modifiers = (expand | valign | halign | setw);
+id = modifiers* ((alpha | '_')+ :>> (alnum | '_')*);
+row = space* ltab space* id space* (col space* id)* space* rtab space*;
+main := row+;
+</pre>
+</blockquote>
+
+Seriously, that's the whole grammar for LEL from the LELParser.rl "Ragel":http://www.cs.queensu.ca/~thurston/ragel/
+file.  I removed the actions so you could check it out, but otherwise
+that's it.
+
+h2. Advantages
+
+The way that LEL is used in Profligacy is very unobtrusive.  If you don't
+want to use it then just don't.  You can still configure all your original
+Swing layout managers, and you're *supposed* to use them where LEL won't
+work.  (NOTE: In the future LEL may just configure a few more than 
+GroupLayout for consistency).
+
+The advantages to using LEL however are:
+
+* Structure and organization of the layout is decoupled from the construction
+of the components in the layout.
+** This flattens the building process making it easier to follow and cleaner.
+** You can build the components in the order that's easiest, rather than what the layout dictates.
+** Your layout structure can be changed easily without rewiring the components.  Just keep the names the same and you're good.
+** You can swap in different layouts easily depending on platforms.  This means you use the same components and building, but change a string to conform on OSX vs. Windows.
+* Components get names tied to cells so it's easier to see what is where.
+** This makes debugging very easy.
+* One line of readable text can do an amazing amount of work without sacrificing clarity.
+* The *user* can enter in a layout or choose from alternatives.  Just load and reparse, the actual code doing the build doesn't change.
+* LELParser tells you when you've got it wrong.  Since it's a DSL for the layout, it tells you when you screwed up the layout.
+* Many errors are caught that you might miss in other systems, like trying to use a cell that's not been named, not naming a cell, etc.
+* It's easy to tweak and mess with the GUI layout since you just change the layout expression and not tons of building code.
+* The interactions are also separated from the building and layout, so you have another separation of concerns.
+* Even if those symbols freak you out, compared to "this crap":http://weblogs.java.net/blog/tpavek/archive/2006/03/getting_to_know.html it's a damn dream.
+* No dependence on tools and you can read the damn code you write.
+* You can extend the LELParser engine to support other layouts, not just GroupLayout.  Just write a Ruby listener that does the work and you're good.
+* It looks like Ruby.  Very *nice* Ruby.
+* It's never in your way, so you can always get to the underlying Swing to do what you need.
+* Most importantly: *You don't have to use it!*
+
+With all these advantages people will still not want to use LEL, so just
+take a look at the other "samples":samples.html to see how you don't need
+to use it.
+
+h2. Demo: Chat Layout
+
+Remember that little sample I gave previously:
+
+<blockquote>
+<pre>
+ [ label_1        | label3           ]
+ [ (300,300)*text1| (150)people      ]
+ [ <label2        | _                ]
+ [ message        | buttons          ]
+</pre>
+</blockquote>
+
+Well, that is actually from one of the examples that builds a little
+chat user interface.  The interface doesn't actually do anything, but it
+does show how you can easily make a nice GUI.
+
+Let's build it so it looks like this:
+
+!/profligacy/images/sample_lel_gui_nested.png!
+
+h3. First Let's Make This Unclear
+
+The above LEL expression doesn't have to be laid out this way.  We could
+also just do this:
+
+<pre>
+  "[label_1|label3][(300,300)*text1|(150)people][<label2|_][message|buttons]"
+</pre>
+
+That's the exact same thing we just compressed it down by removing all the
+spacing.  Depending on the size and complexity of the layout, this might be
+preferred.  In the demo we're just going to keep it in the nice formatting
+so you can see what's going on, but just like a regex you should get to
+where you can read it if you use LEL a lot.
+
+One thing people don't quite understand is that, once you have a language
+that's succinct for doing your layouts you don't really need to write that
+much of it.  In my tests the LEL doesn't get *much* more complex than what
+you're reading above.  Spacing it out clearly helps, but sometimes that's
+also more confusing than just putting it in one line.
+
+
+h3. And Into Ruby
+
+Alright, now we'll need to put this into some Ruby to get it all to work.
+First here's our system without the components:
+
+<blockquote>
+<pre>
+require 'profligacy/swing'
+require 'profligacy/lel'
+
+module Test
+  include_package 'javax.swing'
+  include Profligacy
+
+  layout = "
+     [ label_1         | label3      ]
+     [ (300,300)*text1 | (150)people ]
+     [ <label2         | _           ]
+     [ message         | buttons     ]
+  "
+
+  ui = Swing::LEL.new(JFrame,layout) do |c,i|
+    # nothing here for now
+  end
+
+  ui.build(:args => "Simple LEL Example")
+end
+</pre>
+</blockquote>
+
+We just require the profligacy swing and lel libraries, then make a module
+to test things out.  We need a module because JRuby is really picky about
+how Java stuff is included.
+
+Once we have that we simply make a "Swing::LEL":/profligacy/rdoc/classes/Profligacy/Swing/LEL.html builder rather than say a 
+"Swing::Build":/profligacy/rdoc/classes/Profligacy/Swing/Build.html regular
+builder.
+
+The _Swing::LEL_ builder is passed the JFrame component just like with Swing::Build, but instead of a list of child components, it's given a full on LEL.
+The Swing::LEL builder will infer the names of the components *and* the
+layout to use from this one expression.
+
+h3. Now The Guts
+
+Now we add the components we want, but we'll skip the _buttons_ cell
+for now and just set it to a JPanel:
+
+<blockquote>
+<pre>
+require 'profligacy/swing'
+require 'profligacy/lel'
+
+module Test
+  include_package 'javax.swing'
+  include Profligacy
+
+  layout = "
+     [ label_1         | label3      ]
+     [ (300,300)*text1 | (150)people ]
+     [ <label2         | _           ]
+     [ message         | buttons     ]
+  "
+
+  ui = Swing::LEL.new(JFrame,layout) do |c,i|
+    c.label_1 = JLabel.new "The chat:"
+    c.label2  = JLabel.new "What you're saying:"
+    c.label3  = JLabel.new "The people:"
+    c.text1   = JTextArea.new
+    c.people  = JComboBox.new
+    c.message = JTextArea.new 
+
+    # we'll replace this later with a subcomponent 
+    c.buttons = JPanel.new
+  end
+
+  ui.build(:args => "Simple LEL Example")
+end
+</pre>
+</blockquote>
+
+Like magic this should just run, minus the buttons on the right and it
+might be a little wonky looking.  Otherwise, that is seriously all you need
+to do most component layouts.
+
+Two things to notice, in the block you get a @do |c,i|@ but we only use
+the _c_ variable.  This is where you set the components and it's a
+Ruby Struct that's loaded with attributes based on the names in the 
+LEL expression.  That's how it keeps you straight, so if you tried to
+do @c.screwup = JButton.new "noway"@ JRuby would explode saying that
+the _screwup_ variable isn't in that struct.
+
+The _i_ variable is just for interactions.  It's also a struct and you
+just attach a set of hashes that point at what _proc_ or _method_ should
+be called when that component goes off.  For example, you could do:
+
+<blockquote>
+<pre>
+i.message = {:changed => proc {|t,e| puts "type: #{t}, event: #{e}" } }
+</pre>
+</blockquote>
+
+This would attach a ChangeListener that when the _message_ JTextField
+changed it would print out what type of event and the Event object.
+You could also do it with:
+
+<blockquote>
+<pre>
+i.message = {:changed => method(:message_changed)}
+
+def message_changed(type, event)
+  # do stuff
+end
+</pre>
+</blockquote>
+
+This will have the _changed_ event call _message_changed_ on your class,
+and since it works with *any* ruby method using _method.to_proc_ you can
+also point it at methods on other objects not just self.
+
+Finally, you just call _build_ with various options (see the "RDoc":/rdoc/)
+but most importantly, you have to pass @:args => "Simple LEL Example"@
+so that the JFrame gets a name.
+
+h3. Now Those Buttons
+
+That's your first functional GUI, but we need to add that _buttons_
+panel to this.  This will actually be where we nest another layout
+inside this one, and with our fancy JRuby code it's cake (a lot easier
+than trying to nest a GroupLayout):
+
+<blockquote>
+<pre>
+require 'profligacy/swing'
+require 'profligacy/lel'
+
+module Test
+  include_package 'javax.swing'
+  include Profligacy
+
+  layout = "
+     [ label_1         | label3      ]
+     [ (300,300)*text1 | (150)people ]
+     [ <label2         | _           ]
+     [ message         | buttons     ]
+  "
+
+  ui = Swing::LEL.new(JFrame,layout) do |c,i|
+    c.label_1 = JLabel.new "The chat:"
+    c.label2  = JLabel.new "What you're saying:"
+    c.label3  = JLabel.new "The people:"
+    c.text1   = JTextArea.new
+    c.people  = JComboBox.new
+    c.message = JTextArea.new 
+
+    c.buttons = Swing::LEL.new(JPanel, "[send|hate|quit]") do |c,i|
+      c.send    = JButton.new "Send"
+      c.hate    = JButton.new "Hate"
+      c.quit    = JButton.new "Quit"
+    end.build :auto_create_container_gaps => false
+  end
+
+  ui.build(:args => "Simple LEL Example")
+end
+</pre>
+</blockquote>
+
+See where we just change _buttons_ from a single JPanel to a JPanel
+with it's own GroupLayout, LEL expression, and set of components?
+The only piece of code that might freak you out is:
+
+
+<blockquote>
+<pre>
+    ...
+      c.quit    = JButton.new "Quit"
+    end.build :auto_create_container_gaps => false
+</pre>
+</blockquote>
+
+Ruby is an _expression_ base language, that means everything you write,
+even control structures like a do/end block, has a value you can
+modify.  In this case, the result of doing a @Swing::LEL.new@ is the
+LEL object instance, but what we want to attach to _c.buttons_ is
+the JFrame. That JFrame comes from the call to build, so just put 
+build on the _end_ and presto!  The build call result is assigned
+to _c.buttons_.
+
+Ok, fine, it's like doing this:
+
+
+<blockquote>
+<pre>
+    ...
+    lel = Swing::LEL.new(JPanel, "[send|hate|quit]") do |c,i|
+      c.send    = JButton.new "Send"
+      c.hate    = JButton.new "Hate"
+      c.quit    = JButton.new "Quit"
+    end
+
+    c.buttons = lel.build :auto_create_container_gaps => false
+</pre>
+</blockquote>
+
+However that's ugly.  Try to understand the original because it's
+a great trick.
+
+h2. Running The Sample
+
+Depending on how you installed Profligacy you may need to run this example
+in different ways.  The best way is to have installed Profligacy via
+RubyGems and then simply run jruby so that it loads rubygems:
+
+ $ JRUBY_HOME/bin/gem install profligacy
+ $ jruby -rrubygems layout_test.rb
+
+You can run all the samples this way (and you only have to install once).
+
+
+h2. Conclusion
+
+Using LEL is still experimental, so as the Utu iHate client continues
+I'll be refining it and improving it.  However, right now it's pretty
+powerful and the whole Profligacy system has made many examples in
+several Swing books trivial to implement.
+
+Suggestions are always welcome.

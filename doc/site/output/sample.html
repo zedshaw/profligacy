@@ -1,0 +1,722 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/2001/REC-xhtml11-20010531/DTD/xhtml11-flat.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Language" content="en-gb" />
+    <meta http-equiv="Content-Type" content="text/html; charset=windows-1252" />
+    <link rel="stylesheet" href="default.css" type="text/css" media="screen" />
+    <title>Profligacy: samples</title>
+  </head>
+  <body>
+
+    <div id="content">
+      <div id="search">
+      </div>
+      <div id="header">
+        <h1>Profligacy</h1>
+        <p>the world needs less swing</p>
+      </div>
+
+      <div id="body">
+        <div id="links">
+          <p>
+          <a href="index.html">home</a><br/>
+          about Profligacy
+          <br/><br/>
+          <a href="docs.html">docs</a><br/>
+          API and other info
+          <br/><br/>
+          <a href="sample.html">sample</a><br/>
+          get the idea
+          <br/><br/>
+          <a href="lel.html">LEL</a><br/>
+          cream for layouts
+          <br/><br/>
+          <a href="project.html">project</a><br/>
+          rubyforge project page
+          <br/><br/>
+          <a href="credit.html">credit</a><br/>
+          people who helped
+          <br/><br/>
+          <a href="profligacy.html">origins</a><br/>
+          what a stupid name
+          <br/><br/>
+          <a href="/">iHate...</a><br/>
+          uses this
+          <br/><br/>
+          </p>
+        </div>
+        <div id="main">
+          <h2>How&#8217;s it used?</h2>
+
+
+	<p>Profligacy is really easy to use, but you should still be referring
+to the Swing&#8482; docs to learn how to actually use the components.</p>
+
+
+	<p>These examples are all in the project&#8217;s examples directory along with
+many others.</p>
+
+
+	<p>You should also check out the <a href="lel.html"><span class="caps">LEL</span> instructions</a> for a
+fully explained example using the <em>Layout Expression Language</em>.</p>
+
+
+	<h2>The Book</h2>
+
+
+	<p>These examples are translated from the book <em>Swing: A Beginner&#8217;s Guide</em> 
+by Herbert Schildt and published by McGraw Hill.</p>
+
+
+	<p>What I did was translate the Java code examples to Profligacy and then
+cleaned them up so they are Ruby idiomatic.  The new work is completely
+different looking compared to what&#8217;s in the book.</p>
+
+
+	<h2>examples/swing1.rb</h2>
+
+
+	<p>This example doesn&#8217;t really show off Profligacy but instead shows you
+what the raw Swing looks like with JRuby.  As you can see it&#8217;s much
+nicer than doing it in Java already.</p>
+
+
+<blockquote>
+<pre>
+require 'java'
+require 'profligacy/swing'
+
+import 'javax.swing.JFrame'
+import 'javax.swing.JLabel'
+
+class SwingDemo
+  def initialize
+    jfrm = JFrame.new "A Simple Demo" 
+    jfrm.setSize(275,100)
+    jfrm.default_close_operation = JFrame::EXIT_ON_CLOSE
+    jlab = JLabel.new " Swing powers the modern Java GUI" 
+    jfrm.add jlab
+    jfrm.pack
+    jfrm.visible = true
+  end
+end
+
+SwingUtilities.invoke_later proc { SwingDemo.new }.to_runnable
+</pre>
+</blockquote>
+
+	<h2>examples/swing2.rb</h2>
+
+
+	<p>This is the first example that uses Profligacy to build the Swing
+<span class="caps">GUI</span>, but which doesn&#8217;t use <a href="lel.html"><span class="caps">LEL</span></a> to do the layout.  Instead
+it just uses a plain <a href="http://java.sun.com/j2se/1.4.2/docs/api/java/awt/FlowLayout.html">FlowLayout</a>
+to organize the components.</p>
+
+
+	<p><img src="images/swing2_screen.png" alt="" /></p>
+
+
+<blockquote>
+<pre>
+
+require 'profligacy/swing'
+
+module Buttons
+  class ButtonDemo
+    include_package 'javax.swing'
+    include_package 'java.awt'
+    include Profligacy
+
+    def initialize
+      @ui = Swing::Build.new JFrame, :first, :second, :lab do |c,i|
+        c.lab = JLabel.new "Press A Button." 
+        c.first = JButton.new "First" 
+        c.second = JButton.new "Second" 
+
+        i.first = { :action =&gt; proc {|t,e| c.lab.text = "First pressed." } }
+        i.second = { :action =&gt; proc {|t,e| c.lab.text = "Second pressed." } }
+      end
+
+      @ui.layout = FlowLayout.new
+      @ui.build("The Sample Layout").default_close_operation = JFrame::EXIT_ON_CLOSE
+    end
+  end
+end
+
+SwingUtilities.invoke_later proc { Buttons::ButtonDemo.new }.to_runnable
+
+</pre>
+</blockquote>
+
+	<p>Notice also that you can use the <em>to_runnable</em> and the regular Ruby
+procs to do all your callbacks.  This removes a <strong>huge</strong> amount of repetitive
+error prone Java code from doing listeners and runnables.</p>
+
+
+	<h2>examples/swing3.rb</h2>
+
+
+	<p>This example is a simple stop watch that shows how the callbacks
+can also be <code>method(:name)</code> callbacks.  What Profligacy does is anything
+that&#8217;s registered as a callback has <em>to_proc</em> called on it.  This means
+if you pass in a proc, that gets called.  If you pass in a method, it
+gets converted to a proc.</p>
+
+
+	<p>This means that you can implement callbacks on other objects by simply
+getting their method.  The signature for the method should be <code>method(type,event)</code> with type being a symbol for the Java method that was called, and
+event being the <span class="caps">AWT</span> Event object.</p>
+
+
+	<p><img src="images/swing3_screen.png" alt="" /></p>
+
+
+<blockquote>
+<pre>
+require 'profligacy/swing'
+
+class StopWatch
+  include_package 'javax.swing'
+  import 'java.awt.FlowLayout'
+  include Profligacy
+
+  def initialize
+    @ui = Swing::Build.new JFrame, :start, :stop, :lab do |c,i|
+      c.start = JButton.new "Start" 
+      c.stop = JButton.new "Stop" 
+      c.lab = JLabel.new "Press Start to begin timing." 
+
+      i.start = { :action =&gt; method(:start) }
+      i.stop = { :action =&gt; method(:stop) }
+    end
+
+    @ui.layout = FlowLayout.new
+    @ui.build("Stop Watch").default_close_operation = JFrame::EXIT_ON_CLOSE
+  end
+
+  def start(type, event)
+    @ui.lab.text = "Stopwatch is running..." 
+    @time = Time.new
+  end
+
+  def stop(type, event)
+    if @time
+      @ui.lab.text = "#{Time.now.to_i - @time.to_i} seconds." 
+    else
+      @ui.lab.text = "Start the watch first." 
+    end
+    @time = nil
+  end
+end
+
+SwingUtilities.invoke_later proc { StopWatch.new }.to_runnable
+
+</pre>
+</blockquote>
+
+	<p>The signature for methods has to be <code>callback(type, event)</code> and the
+type is a symbol that represents the method name Java tried to call.
+This lets you tailor the reactions based on the type without having
+to dig into the event.  It&#8217;s also necessary because the name and types
+of the events are inconsistent from the method that&#8217;s called in Swing.</p>
+
+
+	<h2>examples/swing4.rb</h2>
+
+
+	<p>This example shows the real power of Ruby over Java.  It&#8217;s dynamic 
+nature means you can crank out tons of <strong>readable</strong> functionality with
+very little code.  The Java version of this simply repeated
+calls to <code>new JLabel("Left, Top")</code> and then use the exact same names
+as constants to set that alignment.</p>
+
+
+	<p>In the Ruby example below, I use an array of symbols and then just
+simply construct both the label and the alignment from them.</p>
+
+
+	<p><img src="images/swing4_screen.png" alt="" /></p>
+
+
+<blockquote>
+<pre>
+require 'profligacy/swing'
+
+class AlignLabelDemo
+  include_package 'javax.swing'
+  include_package 'java.awt'
+  include_package 'javax.swing.border'
+  include SwingConstants
+  include Profligacy
+
+  def initialize
+    border = BorderFactory.createEtchedBorder
+
+    @ui = Swing::Build.new JFrame, :labels do |c,i|
+      c.labels = [ 
+        [:LEFT, :TOP], [:CENTER, :TOP], [:RIGHT, :TOP],
+        [:LEFT, :CENTER], [:CENTER, :CENTER], [:RIGHT, :CENTER],
+        [:LEFT, :BOTTOM], [:CENTER, :BOTTOM], [:RIGHT, :BOTTOM]
+      ].collect do |horiz,vert| 
+        lab = JLabel.new "#{horiz},#{vert}", AlignLabelDemo.const_get(horiz) 
+        lab.border = border
+        lab.vertical_alignment = AlignLabelDemo.const_get(vert)
+        lab 
+      end
+    end
+
+    @ui.layout = GridLayout.new(3,3,4,4)
+    frame = @ui.build("Label Play")
+    frame.content_pane.border = BorderFactory.createEmptyBorder 4,4,4,4
+    frame.default_close_operation = JFrame::EXIT_ON_CLOSE
+  end
+end
+
+SwingUtilities.invoke_later proc { AlignLabelDemo.new }.to_runnable
+</pre>
+</blockquote>
+
+	<p>This sample also shows you how, because Profligacy uses <em>yield</em> rather
+than <em>instance_eval</em> to have you build the components you can use
+the full power of Ruby to help build things.  No need to worry about
+how the contents of this block is interpreted because it&#8217;s not.</p>
+
+
+	<h2>examples/swing5.rb</h2>
+
+
+	<p>This sample shows how you can access the components in the returned
+<em>Swing::Build</em> object in your callbacks.  In this example we&#8217;ve
+saved a <em>@ui</em> object and then we simply reference the components by
+their names in the <em>toggled</em> callback.  This helps organize and
+structure the code.  Rather than flood the class with a mixture of
+UI component variables and variables that actually are needed for
+the UI&#8217;s logic, we just have them in a handy single location with
+consistent names.</p>
+
+
+	<p><img src="images/swing5_screen_1.png" alt="" /></p>
+
+
+	<p><img src="images/swing5_screen_2.png" alt="" /></p>
+
+
+<blockquote>
+<pre>
+require 'profligacy/swing'
+
+class ToggleButtonDemo
+  include_package 'javax.swing'
+  include_package 'java.awt'
+  include_package 'javax.swing.border'
+  include Profligacy
+
+  def initialize
+    @ui = Swing::Build.new JFrame, :label, :button do |c,i|
+      c.label = JLabel.new "Button is off." 
+      c.button = JToggleButton.new "On/Off" 
+
+      i.button = { :item =&gt; method(:toggled) }
+    end
+
+    @ui.layout = FlowLayout.new
+    @ui.build("Toggle Demo").default_close_operation = JFrame::EXIT_ON_CLOSE
+  end
+
+  def toggled(type, event)
+    if @ui.button.selected?
+      @ui.label.text = "Button is on." 
+    else
+      @ui.label.text = "Button is off." 
+    end
+  end
+end
+
+SwingUtilities.invoke_later proc { ToggleButtonDemo.new }.to_runnable
+</pre>
+</blockquote>
+
+	<p>You of course don&#8217;t <strong>have</strong> to do this at all, it&#8217;s just proven to 
+reduce code repetition since you already named these variables in
+another place, used them there, and will need them again later.</p>
+
+
+	<p>No point then storing these components in variables again.</p>
+
+
+	<h2>examples/swing6.rb</h2>
+
+
+	<p>This sample simply shows handling various events from components.
+One thing that hasn&#8217;t been discussed is how you register a callback.
+The two variables passed to your block are the <em>components</em> and 
+<em>interactions</em> (here done as <em>c,i</em>).  You put components on
+the c variable and they get loaded into the layout and <em>JFrame</em>
+(or <em>JPanel</em> or any container) when you call <em>build</em>.</p>
+
+
+	<p>The interactions are just your proc or method that you attach to the
+<em>i</em> variable.  The problem is many components have different callbacks
+that fire off.  Some answer <em>actionListener</em> others answer <em>changedListener</em>.
+The solution is you attach a Ruby <em>Hash</em> that maps the <em>action</em> to the
+callback to make.  You do as many as you want to handle, and when
+<em>build</em> is called they get appropriately translated.</p>
+
+
+	<p><img src="images/swing6_screen.png" alt="" /></p>
+
+
+<blockquote>
+<pre>
+require 'profligacy/swing'
+
+class TwoTFDemo
+  include_package 'javax.swing'
+  include_package 'java.awt'
+  include_package 'javax.swing.border'
+  include Profligacy
+
+  def initialize
+    @ui = Swing::Build.new JFrame, :texts, :label do |c,i|
+      c.texts = [ JTextField.new(10), JTextField.new(10)]
+      c.texts.each_with_index {|t,n| t.action_command = "text#{n}" }
+      c.label = JLabel.new "Something will show up here." 
+
+      i.texts = {:action =&gt; method(:text_action) }
+    end
+
+    @ui.layout = FlowLayout.new
+    @ui.build("Two Text Fields Demo").default_close_operation = JFrame::EXIT_ON_CLOSE
+  end
+
+  def text_action(type, event)
+    puts "EVENT: #{type} #{event.action_command}" 
+    if event.action_command == "text0" 
+      @ui.label.text = "ENTER pressed in first text" 
+    else
+      @ui.label.text = "ENTER pressed in second text" 
+    end
+  end
+end
+
+SwingUtilities.invoke_later proc { TwoTFDemo.new }.to_runnable
+</pre>
+</blockquote>
+
+	<p>The way you figure out the symbol to use is from the Swing documentation.
+Swing uses a method signature of addSomethingListener.  For :action 
+it&#8217;s <em>addActionListener</em>.  All you do is drop the <em>add</em> and <em>Listener</em>
+and what&#8217;s in the middle is what you set in the Hash. For example, if
+you had a component with an <em>addJavaIsRetardedListener</em> you&#8217;d use the
+symbol <em>javaIsRetarded</em> to set the callback.</p>
+
+
+	<h3>Using Arrays Of Components</h3>
+
+
+	<p>You should also notice another handy feature of Profligacy shown in
+demo swing6.rb.  Notice this code:</p>
+
+
+<blockquote>
+<pre>
+      ...
+      c.texts = [ JTextField.new(10), JTextField.new(10)]
+      c.texts.each_with_index {|t,n| t.action_command = "text#{n}" }
+      ...
+</pre>
+</blockquote>
+
+	<p>When you set a component to an Array Profligacy assumes you want them
+to be added in order and to have the same callback applied to them all.</p>
+
+
+	<p>This cuts down on having to use tons of names in the builder for what&#8217;s
+effectively the same component repeated.  The alternative would be to have
+a <em>c.text1</em>, <em>c.text2</em>, etc.  It also saves you time since Profligacy
+will take the <code>i.texts = {:action =&gt; method(:text_action)}</code> and apply
+that <strong>same</strong> callback to <strong>all</strong> the components in that Array.</p>
+
+
+	<h2>examples/swing7.rb</h2>
+
+
+	<p>This sample shows more advanced callback handling and again shows
+how Ruby cleans up the code tremendously.  The Java version had
+repetitive if/else blocks and nasty String construction to do the
+same thing.  In Ruby we just use <em>each</em> and build the string
+we want on the fly.</p>
+
+
+	<p><img src="images/swing7_screen.png" alt="" /></p>
+
+
+<blockquote>
+<pre>
+require 'profligacy/swing'
+
+class ChangeDemo
+  include_package 'javax.swing'
+  include_package 'java.awt'
+  include_package 'javax.swing.border'
+  include Profligacy
+
+  def initialize
+    @ui = Swing::Build.new JFrame, :button, :label do |c,i|
+      c.label = JLabel.new
+      c.button = JButton.new "Press for Change Event Test" 
+
+      i.button = { :change =&gt; method(:change_check) }
+    end
+
+    @ui.layout = FlowLayout.new
+    frame = @ui.build("Change Demo")
+    frame.set_size(250,160)
+    frame.default_close_operation = JFrame::EXIT_ON_CLOSE
+  end
+
+  def change_check(type, event)
+    model = event.source.model
+    what = []
+    [:enabled?, :rollover?, :armed?, :pressed?].each do |test|
+      if model.send(test)
+        what &lt;&lt; "#{test}&lt;br&gt;" 
+      end
+    end
+
+    @ui.label.text = "&lt;html&gt;Current state:&lt;br&gt;#{what.join(" ")}" 
+  end
+end
+
+SwingUtilities.invoke_later proc { ChangeDemo.new }.to_runnable
+</pre>
+</blockquote>
+
+	<h2>examples/swing8.rb</h2>
+
+
+	<p>This is probably the most complex demo since it actually works as
+a phone book (although a really small one).  No, that&#8217;s not my
+real number.</p>
+
+
+	<p>Again this shows how Ruby just destroys the complexity in these
+GUIs.  By using a <em>case/when</em> block and built-in regex usage we
+can just do the lookup in about 4 lines of code.</p>
+
+
+	<p><img src="images/swing8_screen.png" alt="" /></p>
+
+
+<blockquote>
+<pre>
+require 'profligacy/swing'
+
+class PhoneBookDemo
+  include_package 'javax.swing'
+  include_package 'java.awt'
+  include_package 'javax.swing.border'
+  include Profligacy
+
+  def initialize
+    children = [:lab_name, :name, :lab_number, :number, :lab_options,
+      :ignore_case, :exact, :starts, :ends]
+
+    @search_style = :exact
+
+    @ui = Swing::Build.new(JFrame, *children) do |c,i|
+      c.lab_name = JLabel.new "Name" 
+      c.lab_number = JLabel.new "Number" 
+      c.lab_options = JLabel.new "Search Options" 
+      c.name = JTextField.new 10
+      c.number = JTextField.new 10
+
+      c.exact = JRadioButton.new("Exact Match", true)
+      c.starts = JRadioButton.new("Starts With")
+      c.ends = JRadioButton.new("Ends With")
+
+      b = ButtonGroup.new
+      [c.exact, c.starts, c.ends].each {|x| b.add(x) }
+
+      i.name   = {:action =&gt; proc {|t,e| @ui.number.text = find(@names, e.source.text) } }
+      i.number = {:action =&gt; proc {|t,e| @ui.name.text = find(@numbers, e.source.text) } }
+      i.exact  = {:action =&gt; proc {|t,e| @search_style = :exact } }
+      i.starts = {:action =&gt; proc {|t,e| @search_style = :starts } }
+      i.ends   = {:action =&gt; proc {|t,e| @search_style = :ends } }
+    end
+
+    @ui.layout = GridLayout.new 0,1
+    @ui.build("Phone Book").default_close_operation = JFrame::EXIT_ON_CLOSE
+
+    @names = { 
+    "Zed A. Shaw" =&gt; "917-555-5555",
+    "Frank Blank" =&gt; "212-554-5555" 
+    }
+
+    @numbers = { 
+     "917-555-5555" =&gt; "Zed A. Shaw",
+     "212-554-5555" =&gt; "Frank Blank" 
+    }
+  end
+
+  protected
+  def find(inside, text)
+    results = case @search_style
+    when :exact; inside.keys.grep /^#{text}$/
+    when :starts; inside.keys.grep /^#{text}/
+    when :ends; inside.keys.grep /#{text}$/
+    end
+
+    inside[results[0]] || "" 
+  end
+end
+
+SwingUtilities.invoke_later proc { PhoneBookDemo.new }.to_runnable
+</pre>
+</blockquote>
+
+	<h2>examples/swing8_lel.rb</h2>
+
+
+	<p>The last sample is the first demonstration of using <span class="caps">LEL</span>, but also an
+example of when you might not what to use <em>Swing::LEL</em> compared to
+<em>Swing::Build</em>.  In this case, the code is almost the same and the
+results are nearly the same.</p>
+
+
+	<p><img src="images/swing8_lel_screen.png" alt="" /></p>
+
+
+	<p>What you can see is that the layout has a bit more <em>flavor</em> to it, with
+components right justified, filled out, and better spacing.  This is
+the primary advantage of <span class="caps">LEL</span> in this situation.  It allows you to tweak
+and make the layout look nicer.  It&#8217;s also better when the layout gets
+more complex.</p>
+
+
+	<p>However, don&#8217;t bother using <span class="caps">LEL</span> when a simple FlowLayout might work
+instead.  Use the right tool for the job.  See the <a href="lel.html"><span class="caps">LEL</span> instructions</a>
+for a good example of something that&#8217;s <strong>infinitely</strong> easier with <span class="caps">LEL</span>.</p>
+
+
+<blockquote>
+<pre>
+require 'profligacy/swing'
+require 'profligacy/lel'
+
+class PhoneBookDemo
+  include_package 'javax.swing'
+  include_package 'java.awt'
+  include_package 'javax.swing.border'
+  include Profligacy
+
+  def initialize
+    @search_style = :exact
+
+    layout = "[&gt;lab_name][*name][&gt;lab_number][*number][*lab_options][&lt;exact][&lt;starts][&lt;ends]" 
+
+    @ui = Swing::LEL.new(JFrame, layout) do |c,i|
+      c.lab_name = JLabel.new "Name" 
+      c.lab_number = JLabel.new "Number" 
+      c.lab_options = JLabel.new "Search Options" 
+      c.name = JTextField.new 10
+      c.number = JTextField.new 10
+
+      c.exact = JRadioButton.new("Exact Match", true)
+      c.starts = JRadioButton.new("Starts With")
+      c.ends = JRadioButton.new("Ends With")
+
+      b = ButtonGroup.new
+      [c.exact, c.starts, c.ends].each {|x| b.add(x) }
+
+      i.name   = {:action =&gt; proc {|t,e| @ui.number.text = find(@names, e.source.text) } }
+      i.number = {:action =&gt; proc {|t,e| @ui.name.text = find(@numbers, e.source.text) } }
+      i.exact  = {:action =&gt; proc {|t,e| @search_style = :exact } }
+      i.starts = {:action =&gt; proc {|t,e| @search_style = :starts } }
+      i.ends   = {:action =&gt; proc {|t,e| @search_style = :ends } }
+    end
+
+    @ui.build(:args =&gt; "Phone Book")
+
+    @names = { 
+    "Zed A. Shaw" =&gt; "917-555-5555",
+    "Frank Blank" =&gt; "212-554-5555" 
+    }
+
+    @numbers = { 
+     "917-555-5555" =&gt; "Zed A. Shaw",
+     "212-554-5555" =&gt; "Frank Blank" 
+    }
+  end
+
+  protected
+  def find(inside, text)
+    results = case @search_style
+    when :exact; inside.keys.grep /^#{text}$/
+    when :starts; inside.keys.grep /^#{text}/
+    when :ends; inside.keys.grep /#{text}$/
+    end
+
+    inside[results[0]] || "" 
+  end
+end
+
+SwingUtilities.invoke_later proc { PhoneBookDemo.new }.to_runnable
+</pre>
+</blockquote>
+
+	<h2>examples/layout_test.rb</h2>
+
+
+	<p>To see this example, go to the <a href="lel.html"><span class="caps">LEL</span> instructions</a> which is also
+a great step-by-step set of instructions for using <span class="caps">LEL</span> and Profligacy.</p>
+
+
+	<h2><span class="caps">MY GOD THAT</span>&#8217;S <span class="caps">SO UGLY</span>!</h2>
+
+
+	<p>Alright, calm down moron.  Yes, 10 years ago <span class="caps">AWT</span> and Swing were ugly as hell.
+Now they have these things called &#8220;look-and-feel&#8221; plugins that make it look
+however you want.  Drag your head out of your tightly clinched ass, update
+your damn information, and take a look at a few screenshots here:</p>
+
+
+	<p><img src="images/osx_laf_sample.png" alt="" /></p>
+
+
+	<p>That&#8217;s what just a raw <strong>prototype</strong> GUI looks like on <span class="caps">OSX</span>.  Still using the native buttons,
+still looks pretty close to normal, just a few tweaks and Apple specific settings needed to
+improve it and keep the Jobsians happy.</p>
+
+
+	<p>Here&#8217;s a <span class="caps">LAF</span> called <a href="https://substance.dev.java.net/">Substance</a> that&#8217;s in default
+mode:</p>
+
+
+	<p><img src="images/substance_laf_sample.png" alt="" /></p>
+
+
+	<p>This one is very configurable, and if you want to try it you have to do the following:</p>
+
+
+	<ol>
+	<li>Grab the substance.jar.</li>
+		<li>export <span class="caps">CLASSPATH</span>=.:substance.jar</li>
+		<li>jruby -J-Dswing.defaultlaf=org.jvnet.substance.SubstanceLookAndFeel -Ilib examples/utu_main.rb</li>
+	</ol>
+
+
+	<p>The utu_main.rb file is now included in the examples directory of the profligacy.gem.</p>
+
+
+	<p>So, quit your whining, you can make it look however you want.</p>
+        </div>
+      </div>
+      <div id="footer">
+        Copyright © 2007 Zed A. Shaw. All Rights Reserved.<br/>
+        Design by <a href="http://www.mdibb.net" title="Website of Matt Dibb">Matt Dibb</a> 2006.
+      </div>
+    </div>
+  </body>
+</html>

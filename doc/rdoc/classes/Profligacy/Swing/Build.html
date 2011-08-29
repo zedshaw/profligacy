@@ -1,0 +1,314 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>Class: Profligacy::Swing::Build</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <meta http-equiv="Content-Script-Type" content="text/javascript" />
+  <link rel="stylesheet" href="../../.././rdoc-style.css" type="text/css" media="screen" />
+  <script type="text/javascript">
+  // <![CDATA[
+
+  function popupCode( url ) {
+    window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
+  }
+
+  function toggleCode( id ) {
+    if ( document.getElementById )
+      elem = document.getElementById( id );
+    else if ( document.all )
+      elem = eval( "document.all." + id );
+    else
+      return false;
+
+    elemStyle = elem.style;
+    
+    if ( elemStyle.display != "block" ) {
+      elemStyle.display = "block"
+    } else {
+      elemStyle.display = "none"
+    }
+
+    return true;
+  }
+  
+  // Make codeblocks hidden by default
+  document.writeln( "<style type=\"text/css\">div.method-source-code { display: none }</style>" )
+  
+  // ]]>
+  </script>
+
+</head>
+<body>
+
+
+
+    <div id="classHeader">
+        <table class="header-table">
+        <tr class="top-aligned-row">
+          <td><strong>Class</strong></td>
+          <td class="class-name-in-header">Profligacy::Swing::Build</td>
+        </tr>
+        <tr class="top-aligned-row">
+            <td><strong>In:</strong></td>
+            <td>
+                <a href="../../../files/lib/profligacy/swing_rb.html">
+                lib/profligacy/swing.rb
+                </a>
+        <br />
+            </td>
+        </tr>
+
+        <tr class="top-aligned-row">
+            <td><strong>Parent:</strong></td>
+            <td>
+                Object
+            </td>
+        </tr>
+        </table>
+    </div>
+  <!-- banner header -->
+
+  <div id="bodyContent">
+
+
+
+  <div id="contextContent">
+
+    <div id="description">
+      <p>
+The <a href="Build.html">Swing::Build</a> class doesn&#8216;t actually do
+any swing stuff, but instead it organizes the common pattern of
+constructing components, attaching interaction procs or methods.
+</p>
+<p>
+See the many examples and instructions at <a
+href="http://ihate.rubyforge.org/profligacy">ihate.rubyforge.org/profligacy</a>/
+for more information.
+</p>
+
+    </div>
+
+
+   </div>
+
+    <div id="method-list">
+      <h3 class="section-bar">Methods</h3>
+
+      <div class="name-list">
+      <a href="#M000004">build</a>&nbsp;&nbsp;
+      <a href="#M000008">configure_interactions_for</a>&nbsp;&nbsp;
+      <a href="#M000006">each_or_one</a>&nbsp;&nbsp;
+      <a href="#M000005">method_missing</a>&nbsp;&nbsp;
+      <a href="#M000003">new</a>&nbsp;&nbsp;
+      <a href="#M000007">setup_children_and_interactions</a>&nbsp;&nbsp;
+      </div>
+    </div>
+
+  </div>
+
+
+    <!-- if includes -->
+
+    <div id="section">
+
+
+
+
+
+    <div id="attribute-list">
+      <h3 class="section-bar">Attributes</h3>
+
+      <div class="name-list">
+        <table>
+        <tr class="top-aligned-row context-row">
+          <td class="context-item-name">children</td>
+          <td class="context-item-value">&nbsp;[RW]&nbsp;</td>
+          <td class="context-item-desc"></td>
+        </tr>
+        <tr class="top-aligned-row context-row">
+          <td class="context-item-name">container</td>
+          <td class="context-item-value">&nbsp;[RW]&nbsp;</td>
+          <td class="context-item-desc"></td>
+        </tr>
+        <tr class="top-aligned-row context-row">
+          <td class="context-item-name">contents</td>
+          <td class="context-item-value">&nbsp;[RW]&nbsp;</td>
+          <td class="context-item-desc"></td>
+        </tr>
+        <tr class="top-aligned-row context-row">
+          <td class="context-item-name">interactions</td>
+          <td class="context-item-value">&nbsp;[RW]&nbsp;</td>
+          <td class="context-item-desc"></td>
+        </tr>
+        <tr class="top-aligned-row context-row">
+          <td class="context-item-name">layout</td>
+          <td class="context-item-value">&nbsp;[RW]&nbsp;</td>
+          <td class="context-item-desc"></td>
+        </tr>
+        </table>
+      </div>
+    </div>
+      
+
+
+    <!-- if method_list -->
+    <div id="methods">
+      <h3 class="section-bar">Public Class methods</h3>
+
+      <div id="method-M000003" class="method-detail">
+        <a name="M000003"></a>
+
+        <div class="method-heading">
+          <a href="Build.src/M000003.html" target="Code" class="method-signature"
+            onclick="popupCode('Build.src/M000003.html');return false;">
+          <span class="method-name">new</span><span class="method-args">(*children) {|@contents, @interactions| ...}</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+When you construct a <a href="Build.html">Swing::Build</a> you pass in the
+container to use as the first argument, and then symbols for the names of
+the contents as the rest of the arguments.
+</p>
+<pre>
+  ui = Swing::Build.new JFrame, :left, :right, :top do |c,i|
+    ...
+  end
+</pre>
+<p>
+The <a href="Build.html">Build</a> class doesn&#8216;t actually do anything
+with this until you call the <a
+href="Build.html#M000004">Swing::Build.build</a> method. It just collects
+up the contents and interactions you attach to the c and i parameters in
+the block.
+</p>
+<p>
+The c and i parameters stand for contents and interactions and are a Ruby
+Struct objects that have the names you gave as elements. This means if you
+try to set one that doesn&#8216;t exist you&#8216;ll get an error (which is
+pretty handy).
+</p>
+        </div>
+      </div>
+
+      <h3 class="section-bar">Public Instance methods</h3>
+
+      <div id="method-M000004" class="method-detail">
+        <a name="M000004"></a>
+
+        <div class="method-heading">
+          <a href="Build.src/M000004.html" target="Code" class="method-signature"
+            onclick="popupCode('Build.src/M000004.html');return false;">
+          <span class="method-name">build</span><span class="method-args">(*args) {|@container if block_given?| ...}</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+<a href="Build.html">Build</a> will finally <a
+href="Build.html#M000004">build</a> the container you configured, passing
+any arguments to that container. When it&#8216;s done it returns the
+resulting container for you to modify.
+</p>
+<p>
+You can also attach a block to the method call that will be called with the
+container right before it&#8216;s completed. This lets you modify it at the
+right moment. For example, if you need to set some options to a JFrame
+right before it&#8216;s made visible.
+</p>
+<p>
+Finally, it&#8216;s so common to make containers visible and pack them that
+this method will do that if the container has those methods.
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000005" class="method-detail">
+        <a name="M000005"></a>
+
+        <div class="method-heading">
+          <a href="Build.src/M000005.html" target="Code" class="method-signature"
+            onclick="popupCode('Build.src/M000005.html');return false;">
+          <span class="method-name">method_missing</span><span class="method-args">(symb, *args)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+It&#8216;s kind of a pain to always access ui.contents.thename so the <a
+href="Build.html#M000005">method_missing</a> simply lets you do ui.thename.
+Won&#8216;t work of course if your component is named &quot;<a
+href="Build.html#M000004">build</a>&quot;, &quot;children&quot;,
+&quot;contents&quot;, &quot;interactions&quot;, &quot;layout&quot;,
+&quot;container&quot; since those exist in the <a
+href="Build.html">Build</a> object already.
+</p>
+        </div>
+      </div>
+
+      <h3 class="section-bar">Protected Instance methods</h3>
+
+      <div id="method-M000008" class="method-detail">
+        <a name="M000008"></a>
+
+        <div class="method-heading">
+          <a href="Build.src/M000008.html" target="Code" class="method-signature"
+            onclick="popupCode('Build.src/M000008.html');return false;">
+          <span class="method-name">configure_interactions_for</span><span class="method-args">(child,component)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+        </div>
+      </div>
+
+      <div id="method-M000006" class="method-detail">
+        <a name="M000006"></a>
+
+        <div class="method-heading">
+          <a href="Build.src/M000006.html" target="Code" class="method-signature"
+            onclick="popupCode('Build.src/M000006.html');return false;">
+          <span class="method-name">each_or_one</span><span class="method-args">(component) {|c| ...}</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+allows for a block of code to be run on each element of anything responding
+to each, or just on one item
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000007" class="method-detail">
+        <a name="M000007"></a>
+
+        <div class="method-heading">
+          <a href="Build.src/M000007.html" target="Code" class="method-signature"
+            onclick="popupCode('Build.src/M000007.html');return false;">
+          <span class="method-name">setup_children_and_interactions</span><span class="method-args">(children)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+        </div>
+      </div>
+
+
+    </div>
+
+
+  </div>
+
+
+<div id="validator-badges">
+  <p><small><a href="http://validator.w3.org/check/referer">[Validate]</a></small></p>
+</div>
+
+</body>
+</html>

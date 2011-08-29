@@ -1,0 +1,72 @@
+---
+title: profligacy
+inMenu: true
+directoryName: profligacy
+---
+h2. Profligacy ~_( the swing reducer )_~
+
+Profligacy is a JRuby library that makes building "Swing":http://java.sun.com/docs/books/tutorial/uiswing/
+Graphical User Interface *much* easier than with Raw code.  It's not
+a builder as with many other projects, but instead a simple Ruby way
+to structure the UI for the 80% common cases you'll encounter.
+
+It's actively used in the "Utu":http://savingtheinternetwithhate.com/
+"iHate":http://ihate.rubyforge.org/ client.  iHate started as a 
+RubyCocoa project and then convert to JRuby and Swing.
+
+The purpose of Profligacy is *not* to be a complete way of hiding
+Swing components from you.  You'll still be making JButtons and 
+JLabels, you'll just be putting them into a Ruby idiomatic code
+structure that doesn't make your eyes hemorrhage diarrhea like when
+you try to code in Java.
+
+The only real innovation in Profligacy is a simpler way to configure
+a "GroupLayout":http://java.sun.com/javase/6/docs/api/javax/swing/GroupLayout.html
+using a simple regex/wiki style syntax.  This is a work in progress, but
+it should make building GUIs much much easier.
+
+h2. Features
+
+* Doesn't hide swing from you so you have full access to components.
+* Separates the components from the interactions for clarity.
+* Decouples the layout from the component building so you can build in any order you like.
+* Hides the ugliness and complexity of Java's Listener and Runnables.
+* Allows for simplified Ruby proc or method based callbacks.
+* Slick layout mechanism called "LEL":lel.html that makes it easy to do big stuff.
+* You don't have to use it and are expected to do complex components directly.
+
+h2. Installation
+
+The best way to install Profligacy is through the JRuby version of 
+RubyGems (adjusting for wherever *your* jruby/bin is located):
+
+  /opt/jruby/bin/gem install profligacy
+
+However, that causes some problems somtimes with an Out-of-Memory error
+so you can get the files from "the project page":http://rubyforge.org/frs/?group_id=3605
+and install them directly with:
+
+  /opt/jruby/bin/gem install profligacy-VERSION-jruby.gem
+
+Where _VERSION_ would be the latest.
+
+
+h2. Getting Started
+
+Just check out the "samples":sample.html for a few examples and read
+the "RDoc":/rdoc/ to get started.
+
+h2. The Author
+
+Profligacy is written by "Zed A. Shaw":http://www.zedshaw.com/
+
+h2. The License
+
+While the Utu project is GPL licensed, Profligacy is Ruby licensed
+so that anyone can use it.
+
+h2. Why Not Cheri?
+
+"This file":/profligacy/cheri_constants.rb from the "Cheri":http://cheri.rubyforge.org/ project is why.
+
+

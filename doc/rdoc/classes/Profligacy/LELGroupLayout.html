@@ -1,0 +1,343 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>Class: Profligacy::LELGroupLayout</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <meta http-equiv="Content-Script-Type" content="text/javascript" />
+  <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
+  <script type="text/javascript">
+  // <![CDATA[
+
+  function popupCode( url ) {
+    window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
+  }
+
+  function toggleCode( id ) {
+    if ( document.getElementById )
+      elem = document.getElementById( id );
+    else if ( document.all )
+      elem = eval( "document.all." + id );
+    else
+      return false;
+
+    elemStyle = elem.style;
+    
+    if ( elemStyle.display != "block" ) {
+      elemStyle.display = "block"
+    } else {
+      elemStyle.display = "none"
+    }
+
+    return true;
+  }
+  
+  // Make codeblocks hidden by default
+  document.writeln( "<style type=\"text/css\">div.method-source-code { display: none }</style>" )
+  
+  // ]]>
+  </script>
+
+</head>
+<body>
+
+
+
+    <div id="classHeader">
+        <table class="header-table">
+        <tr class="top-aligned-row">
+          <td><strong>Class</strong></td>
+          <td class="class-name-in-header">Profligacy::LELGroupLayout</td>
+        </tr>
+        <tr class="top-aligned-row">
+            <td><strong>In:</strong></td>
+            <td>
+                <a href="../../files/lib/profligacy/lel_rb.html">
+                lib/profligacy/lel.rb
+                </a>
+        <br />
+            </td>
+        </tr>
+
+        <tr class="top-aligned-row">
+            <td><strong>Parent:</strong></td>
+            <td>
+                Object
+            </td>
+        </tr>
+        </table>
+    </div>
+  <!-- banner header -->
+
+  <div id="bodyContent">
+
+
+
+  <div id="contextContent">
+
+    <div id="description">
+      <p>
+Used by <a href="Swing/Build.html">Swing::Build</a> as the listener for
+LELParser which configures a GroupLayout from the LEL expression. See <a
+href="http://ihate.rubyforge.org/profligacy/lel.html">ihate.rubyforge.org/profligacy/lel.html</a>
+for instructions on how to use LEL.
+</p>
+
+    </div>
+
+
+   </div>
+
+    <div id="method-list">
+      <h3 class="section-bar">Methods</h3>
+
+      <div class="name-list">
+      <a href="#M000019">align</a>&nbsp;&nbsp;
+      <a href="#M000014">col</a>&nbsp;&nbsp;
+      <a href="#M000022">expand</a>&nbsp;&nbsp;
+      <a href="#M000023">finished</a>&nbsp;&nbsp;
+      <a href="#M000017">id</a>&nbsp;&nbsp;
+      <a href="#M000015">ltab</a>&nbsp;&nbsp;
+      <a href="#M000013">new</a>&nbsp;&nbsp;
+      <a href="#M000018">row</a>&nbsp;&nbsp;
+      <a href="#M000021">setheight</a>&nbsp;&nbsp;
+      <a href="#M000020">setwidth</a>&nbsp;&nbsp;
+      <a href="#M000016">valign</a>&nbsp;&nbsp;
+      </div>
+    </div>
+
+  </div>
+
+
+    <!-- if includes -->
+    <div id="includes">
+      <h3 class="section-bar">Included Modules</h3>
+
+      <div id="includes-list">
+        <span class="include-name">Profligacy::LELParser::LELEventListener</span>
+      </div>
+    </div>
+
+    <div id="section">
+
+
+
+
+
+      
+
+
+    <!-- if method_list -->
+    <div id="methods">
+      <h3 class="section-bar">Public Class methods</h3>
+
+      <div id="method-M000013" class="method-detail">
+        <a name="M000013"></a>
+
+        <div class="method-heading">
+          <a href="LELGroupLayout.src/M000013.html" target="Code" class="method-signature"
+            onclick="popupCode('LELGroupLayout.src/M000013.html');return false;">
+          <span class="method-name">new</span><span class="method-args">(layout, components)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Takes a GroupLayout and the list of components to organize inside it.
+</p>
+        </div>
+      </div>
+
+      <h3 class="section-bar">Public Instance methods</h3>
+
+      <div id="method-M000019" class="method-detail">
+        <a name="M000019"></a>
+
+        <div class="method-heading">
+          <a href="LELGroupLayout.src/M000019.html" target="Code" class="method-signature"
+            onclick="popupCode('LELGroupLayout.src/M000019.html');return false;">
+          <span class="method-name">align</span><span class="method-args">(direction)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Called when a &#8217;&gt;&#8217; or &#8217;&lt;&#8217; token is hit by the
+LELParser.
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000014" class="method-detail">
+        <a name="M000014"></a>
+
+        <div class="method-heading">
+          <a href="LELGroupLayout.src/M000014.html" target="Code" class="method-signature"
+            onclick="popupCode('LELGroupLayout.src/M000014.html');return false;">
+          <span class="method-name">col</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Called when a &#8217;|&#8217; token is hit by the LELParser.
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000022" class="method-detail">
+        <a name="M000022"></a>
+
+        <div class="method-heading">
+          <a href="LELGroupLayout.src/M000022.html" target="Code" class="method-signature"
+            onclick="popupCode('LELGroupLayout.src/M000022.html');return false;">
+          <span class="method-name">expand</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Called when the cell should <a
+href="LELGroupLayout.html#M000022">expand</a> via a &#8217;*&#8217; token.
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000023" class="method-detail">
+        <a name="M000023"></a>
+
+        <div class="method-heading">
+          <a href="LELGroupLayout.src/M000023.html" target="Code" class="method-signature"
+            onclick="popupCode('LELGroupLayout.src/M000023.html');return false;">
+          <span class="method-name">finished</span><span class="method-args">(error)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Called when it&#8216;s done parsing, and whether there was an error.
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000017" class="method-detail">
+        <a name="M000017"></a>
+
+        <div class="method-heading">
+          <a href="LELGroupLayout.src/M000017.html" target="Code" class="method-signature"
+            onclick="popupCode('LELGroupLayout.src/M000017.html');return false;">
+          <span class="method-name">id</span><span class="method-args">(name)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Called when a name/id for a cell token is hit by the LELParser.
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000015" class="method-detail">
+        <a name="M000015"></a>
+
+        <div class="method-heading">
+          <a href="LELGroupLayout.src/M000015.html" target="Code" class="method-signature"
+            onclick="popupCode('LELGroupLayout.src/M000015.html');return false;">
+          <span class="method-name">ltab</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Called when a &#8217;[&#8217; token is hit by the LELParser.
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000018" class="method-detail">
+        <a name="M000018"></a>
+
+        <div class="method-heading">
+          <a href="LELGroupLayout.src/M000018.html" target="Code" class="method-signature"
+            onclick="popupCode('LELGroupLayout.src/M000018.html');return false;">
+          <span class="method-name">row</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Called when a &#8217;]&#8217; token is hit by the LELParser.
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000021" class="method-detail">
+        <a name="M000021"></a>
+
+        <div class="method-heading">
+          <a href="LELGroupLayout.src/M000021.html" target="Code" class="method-signature"
+            onclick="popupCode('LELGroupLayout.src/M000021.html');return false;">
+          <span class="method-name">setheight</span><span class="method-args">(height)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Called when a height is added to &#8217;(#,#)&#8217; expressions in the
+LELParser.
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000020" class="method-detail">
+        <a name="M000020"></a>
+
+        <div class="method-heading">
+          <a href="LELGroupLayout.src/M000020.html" target="Code" class="method-signature"
+            onclick="popupCode('LELGroupLayout.src/M000020.html');return false;">
+          <span class="method-name">setwidth</span><span class="method-args">(width)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Called when a &#8217;(#)&#8217; is hit (with # being some number) by the
+LELParser.
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000016" class="method-detail">
+        <a name="M000016"></a>
+
+        <div class="method-heading">
+          <a href="LELGroupLayout.src/M000016.html" target="Code" class="method-signature"
+            onclick="popupCode('LELGroupLayout.src/M000016.html');return false;">
+          <span class="method-name">valign</span><span class="method-args">(dir)</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Called when a &#8217;^&#8217; or &#8217;.&#8217; token is hit by the
+LELParser.
+</p>
+        </div>
+      </div>
+
+
+    </div>
+
+
+  </div>
+
+
+<div id="validator-badges">
+  <p><small><a href="http://validator.w3.org/check/referer">[Validate]</a></small></p>
+</div>
+
+</body>
+</html>

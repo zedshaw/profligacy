@@ -1,0 +1,19 @@
+= Profligacy: A Swing Improvement
+
+== RubyForge Project
+
+The project is hosted at:
+
+ http://ihate.rubyforge.org/profligacy/
+
+Where you can file bugs and other things, as well as download gems manually.
+
+== License
+
+See the COPYING file included with the source.  It's the same license as Ruby but
+Copyright Zed A. Shaw 2007 All Right Reserved.
+
+== Source Code
+
+Source is available from the ihate project page in the Files section as a .tgz
+source tarball.

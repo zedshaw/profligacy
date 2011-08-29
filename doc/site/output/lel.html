@@ -1,0 +1,548 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/2001/REC-xhtml11-20010531/DTD/xhtml11-flat.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Language" content="en-gb" />
+    <meta http-equiv="Content-Type" content="text/html; charset=windows-1252" />
+    <link rel="stylesheet" href="default.css" type="text/css" media="screen" />
+    <title>Profligacy: LEL</title>
+  </head>
+  <body>
+
+    <div id="content">
+      <div id="search">
+      </div>
+      <div id="header">
+        <h1>Profligacy</h1>
+        <p>the world needs less swing</p>
+      </div>
+
+      <div id="body">
+        <div id="links">
+          <p>
+          <a href="index.html">home</a><br/>
+          about Profligacy
+          <br/><br/>
+          <a href="docs.html">docs</a><br/>
+          API and other info
+          <br/><br/>
+          <a href="sample.html">sample</a><br/>
+          get the idea
+          <br/><br/>
+          <a href="lel.html">LEL</a><br/>
+          cream for layouts
+          <br/><br/>
+          <a href="project.html">project</a><br/>
+          rubyforge project page
+          <br/><br/>
+          <a href="credit.html">credit</a><br/>
+          people who helped
+          <br/><br/>
+          <a href="profligacy.html">origins</a><br/>
+          what a stupid name
+          <br/><br/>
+          <a href="/">iHate...</a><br/>
+          uses this
+          <br/><br/>
+          </p>
+        </div>
+        <div id="main">
+          <h2>Layout Expression Language</h2>
+
+
+	<p>Profligacy lets you build any Swing <span class="caps">GUI</span> you&#8217;d like using the standard
+containers and layout mechanisms.  However, most of those are difficult
+to code and truly only exist to support companies who sell tools.</p>
+
+
+	<p>In order to break programmer&#8217;s dependence on the <span class="caps">IDE</span> opiate, Profligacy
+includes a unique layout method called <em>Layout Expression Language</em> or
+just <span class="caps">LEL</span>.  It&#8217;s similar to a regex for layout that looks and works like
+tables do in a Wiki.  Using a very simple small little syntax for how
+cells in a component are organized, the programmer can develop the
+interface without special tools.</p>
+
+
+	<h3>Wiki Like Regex</h3>
+
+
+	<p>If you&#8217;ve ever used <a href="http://whytheluckystiff.net/ruby/redcloth/">RedCloth</a>
+to do tables you&#8217;ll probably know what I mean right away.  Most wiki
+systems (like RedCloth) have a table layout that looks like this:</p>
+
+
+<blockquote>
+<pre>
+ |apples|oranges|pears|
+ |100   |50     |30   |
+</pre>
+</blockquote>
+
+	<p>You&#8217;ll get different formatting options and appearance depending on how
+advanced the tables can be.</p>
+
+
+	<p><span class="caps">LEL</span> is very similar, but it works to organize and <strong>name</strong> the <em>cells</em>
+that make up the places components should fill.  Here&#8217;s an example 
+expression that&#8217;s laid out similar to a wiki table:</p>
+
+
+<blockquote>
+<pre>
+ [ label_1        | label3           ]
+ [ (300,300)*text1| (150)people      ]
+ [ &lt;label2        | _                ]
+ [ message        | buttons          ]
+</pre>
+</blockquote>
+
+	<p>Right away you can see:</p>
+
+
+	<ul>
+	<li>This is a grid of 4 rows by 2 columns.</li>
+		<li>Some of the cells have names in them like &#8220;label_1&#8221;, &#8220;people&#8221;.</li>
+		<li>Before some names there&#8217;s modifiers.
+	<ul>
+	<li>(150) sets <em>people</em> to be 150 pixels wide.</li>
+		<li>(300,300) sets <em>text1</em> to be 300 by 300 pixels in size.</li>
+		<li>&#8216;&lt;&#8217; and &#8216;&gt;&#8217; align the cell left or right.</li>
+		<li>&#8216;<code>*</code>&#8217; tells that cell to expand taking all available space.</li>
+		<li>&#8217;^&#8217; and &#8217;.&#8217; make that component align top or bottom.</li>
+	</ul>
+	</li>
+		<li>One of the cells has just a &#8217;_&#8217; for the name.  This makes it empty.</li>
+	</ul>
+
+
+	<p>Once you have a layout like this (and this chunk of code would actually
+work) you&#8217;d then fill in all the cells with their components.  Since
+the LELParser knows where everything already is, you can load these
+components in any order that makes sense.  No more struggling to 
+force things into a certain ordering just to keep a layout manager
+happy.  Nice and flat.</p>
+
+
+	<p>How all this is done depends on a little bit of theory.</p>
+
+
+	<h3>Theory Behind <span class="caps">LEL</span></h3>
+
+
+	<p>You really don&#8217;t need to know this to use <span class="caps">LEL</span>, but it helps to
+understand what&#8217;s going on and why it works.  In fact, I&#8217;m kind of
+amazed it actually works myself.  Just shows you what picking a good
+algorithm can do.</p>
+
+
+	<p>The basis of <span class="caps">LEL</span> is constraint programming.  All layout managers
+are simply trying to balance a large constraint solving problem
+that determines the size of cells in a grid.  It&#8217;s a solved problem,
+and there&#8217;s libraries to do it, but these libraries are usually
+more difficult to use than the already difficult layout managers.</p>
+
+
+	<p>When you look at a constraint matrix, it actually looks like a 
+table that gets built when you compile a regular expression or a
+parser grammar.  It&#8217;s a big matrix with a series of constraints and
+transitions in it (roughly, shut up, I know this).</p>
+
+
+	<p>If a regex like <code>/^[0-9]([a-zA-Z_]*)$/</code> can be compiled into a
+table of state transitions, why can&#8217;t a similar language be developed
+for constraint solving problems?</p>
+
+
+	<p>However, trying to do a layout with something like the above regex would
+be very painful.  I&#8217;m sure it would attract super smart people, but there&#8217;s
+not too many of those.  The next best language for composing a table
+that&#8217;s visual is (you guessed it) the syntax that wiki sites use.</p>
+
+
+	<p>With just a few simple tweaks to the syntax, a parser that can process
+the syntax to configure a <a href="http://java.sun.com/javase/6/docs/api/javax/swing/GroupLayout.html">Swing GroupLayout</a>
+and a way to plug the components into the grid, we have a fully functioning
+layout language.</p>
+
+
+	<p>Simple!  Ok, maybe not but like you need to really know this.  Take a
+look at the code though to the parser, it&#8217;s pretty simple:</p>
+
+
+<blockquote>
+<pre>
+col = "|";
+ltab = "[";
+rtab = "]";
+valign = ("^" | ".");
+expand = "*";
+halign = ("&lt;" | "&gt;");
+number =  digit+;
+setw = ("(" number ("," number)? ")") ;
+modifiers = (expand | valign | halign | setw);
+id = modifiers* ((alpha | '_')+ :&gt;&gt; (alnum | '_')*);
+row = space* ltab space* id space* (col space* id)* space* rtab space*;
+main := row+;
+</pre>
+</blockquote>
+
+	<p>Seriously, that&#8217;s the whole grammar for <span class="caps">LEL</span> from the LELParser.rl <a href="http://www.cs.queensu.ca/~thurston/ragel/">Ragel</a>
+file.  I removed the actions so you could check it out, but otherwise
+that&#8217;s it.</p>
+
+
+	<h2>Advantages</h2>
+
+
+	<p>The way that <span class="caps">LEL</span> is used in Profligacy is very unobtrusive.  If you don&#8217;t
+want to use it then just don&#8217;t.  You can still configure all your original
+Swing layout managers, and you&#8217;re <strong>supposed</strong> to use them where <span class="caps">LEL</span> won&#8217;t
+work.  (NOTE: In the future <span class="caps">LEL</span> may just configure a few more than 
+GroupLayout for consistency).</p>
+
+
+	<p>The advantages to using <span class="caps">LEL</span> however are:</p>
+
+
+	<ul>
+	<li>Structure and organization of the layout is decoupled from the construction
+of the components in the layout.
+	<ul>
+	<li>This flattens the building process making it easier to follow and cleaner.</li>
+		<li>You can build the components in the order that&#8217;s easiest, rather than what the layout dictates.</li>
+		<li>Your layout structure can be changed easily without rewiring the components.  Just keep the names the same and you&#8217;re good.</li>
+		<li>You can swap in different layouts easily depending on platforms.  This means you use the same components and building, but change a string to conform on <span class="caps">OSX</span> vs. Windows.</li>
+	</ul>
+	</li>
+		<li>Components get names tied to cells so it&#8217;s easier to see what is where.
+	<ul>
+	<li>This makes debugging very easy.</li>
+	</ul>
+	</li>
+		<li>One line of readable text can do an amazing amount of work without sacrificing clarity.</li>
+		<li>The <strong>user</strong> can enter in a layout or choose from alternatives.  Just load and reparse, the actual code doing the build doesn&#8217;t change.</li>
+		<li>LELParser tells you when you&#8217;ve got it wrong.  Since it&#8217;s a <span class="caps">DSL</span> for the layout, it tells you when you screwed up the layout.</li>
+		<li>Many errors are caught that you might miss in other systems, like trying to use a cell that&#8217;s not been named, not naming a cell, etc.</li>
+		<li>It&#8217;s easy to tweak and mess with the <span class="caps">GUI</span> layout since you just change the layout expression and not tons of building code.</li>
+		<li>The interactions are also separated from the building and layout, so you have another separation of concerns.</li>
+		<li>Even if those symbols freak you out, compared to <a href="http://weblogs.java.net/blog/tpavek/archive/2006/03/getting_to_know.html">this crap</a> it&#8217;s a damn dream.</li>
+		<li>No dependence on tools and you can read the damn code you write.</li>
+		<li>You can extend the LELParser engine to support other layouts, not just GroupLayout.  Just write a Ruby listener that does the work and you&#8217;re good.</li>
+		<li>It looks like Ruby.  Very <strong>nice</strong> Ruby.</li>
+		<li>It&#8217;s never in your way, so you can always get to the underlying Swing to do what you need.</li>
+		<li>Most importantly: <strong>You don&#8217;t have to use it!</strong></li>
+	</ul>
+
+
+	<p>With all these advantages people will still not want to use <span class="caps">LEL</span>, so just
+take a look at the other <a href="samples.html">samples</a> to see how you don&#8217;t need
+to use it.</p>
+
+
+	<h2>Demo: Chat Layout</h2>
+
+
+	<p>Remember that little sample I gave previously:</p>
+
+
+<blockquote>
+<pre>
+ [ label_1        | label3           ]
+ [ (300,300)*text1| (150)people      ]
+ [ &lt;label2        | _                ]
+ [ message        | buttons          ]
+</pre>
+</blockquote>
+
+	<p>Well, that is actually from one of the examples that builds a little
+chat user interface.  The interface doesn&#8217;t actually do anything, but it
+does show how you can easily make a nice <span class="caps">GUI</span>.</p>
+
+
+	<p>Let&#8217;s build it so it looks like this:</p>
+
+
+	<p><img src="/profligacy/images/sample_lel_gui_nested.png" alt="" /></p>
+
+
+	<h3>First Let&#8217;s Make This Unclear</h3>
+
+
+	<p>The above <span class="caps">LEL</span> expression doesn&#8217;t have to be laid out this way.  We could
+also just do this:</p>
+
+
+<pre>
+  "[label_1|label3][(300,300)*text1|(150)people][&lt;label2|_][message|buttons]" 
+</pre>
+
+	<p>That&#8217;s the exact same thing we just compressed it down by removing all the
+spacing.  Depending on the size and complexity of the layout, this might be
+preferred.  In the demo we&#8217;re just going to keep it in the nice formatting
+so you can see what&#8217;s going on, but just like a regex you should get to
+where you can read it if you use <span class="caps">LEL</span> a lot.</p>
+
+
+	<p>One thing people don&#8217;t quite understand is that, once you have a language
+that&#8217;s succinct for doing your layouts you don&#8217;t really need to write that
+much of it.  In my tests the <span class="caps">LEL</span> doesn&#8217;t get <strong>much</strong> more complex than what
+you&#8217;re reading above.  Spacing it out clearly helps, but sometimes that&#8217;s
+also more confusing than just putting it in one line.</p>
+
+
+	<h3>And Into Ruby</h3>
+
+
+	<p>Alright, now we&#8217;ll need to put this into some Ruby to get it all to work.
+First here&#8217;s our system without the components:</p>
+
+
+<blockquote>
+<pre>
+require 'profligacy/swing'
+require 'profligacy/lel'
+
+module Test
+  include_package 'javax.swing'
+  include Profligacy
+
+  layout = " 
+     [ label_1         | label3      ]
+     [ (300,300)*text1 | (150)people ]
+     [ &lt;label2         | _           ]
+     [ message         | buttons     ]
+  " 
+
+  ui = Swing::LEL.new(JFrame,layout) do |c,i|
+    # nothing here for now
+  end
+
+  ui.build(:args =&gt; "Simple LEL Example")
+end
+</pre>
+</blockquote>
+
+	<p>We just require the profligacy swing and lel libraries, then make a module
+to test things out.  We need a module because JRuby is really picky about
+how Java stuff is included.</p>
+
+
+	<p>Once we have that we simply make a <a href="/profligacy/rdoc/classes/Profligacy/Swing/LEL.html">Swing::LEL</a> builder rather than say a 
+<a href="/profligacy/rdoc/classes/Profligacy/Swing/Build.html">Swing::Build</a> regular
+builder.</p>
+
+
+	<p>The <em>Swing::LEL</em> builder is passed the JFrame component just like with Swing::Build, but instead of a list of child components, it&#8217;s given a full on <span class="caps">LEL</span>.
+The Swing::LEL builder will infer the names of the components <strong>and</strong> the
+layout to use from this one expression.</p>
+
+
+	<h3>Now The Guts</h3>
+
+
+	<p>Now we add the components we want, but we&#8217;ll skip the <em>buttons</em> cell
+for now and just set it to a JPanel:</p>
+
+
+<blockquote>
+<pre>
+require 'profligacy/swing'
+require 'profligacy/lel'
+
+module Test
+  include_package 'javax.swing'
+  include Profligacy
+
+  layout = " 
+     [ label_1         | label3      ]
+     [ (300,300)*text1 | (150)people ]
+     [ &lt;label2         | _           ]
+     [ message         | buttons     ]
+  " 
+
+  ui = Swing::LEL.new(JFrame,layout) do |c,i|
+    c.label_1 = JLabel.new "The chat:" 
+    c.label2  = JLabel.new "What you're saying:" 
+    c.label3  = JLabel.new "The people:" 
+    c.text1   = JTextArea.new
+    c.people  = JComboBox.new
+    c.message = JTextArea.new 
+
+    # we'll replace this later with a subcomponent 
+    c.buttons = JPanel.new
+  end
+
+  ui.build(:args =&gt; "Simple LEL Example")
+end
+</pre>
+</blockquote>
+
+	<p>Like magic this should just run, minus the buttons on the right and it
+might be a little wonky looking.  Otherwise, that is seriously all you need
+to do most component layouts.</p>
+
+
+	<p>Two things to notice, in the block you get a <code>do |c,i|</code> but we only use
+the <em>c</em> variable.  This is where you set the components and it&#8217;s a
+Ruby Struct that&#8217;s loaded with attributes based on the names in the 
+<span class="caps">LEL</span> expression.  That&#8217;s how it keeps you straight, so if you tried to
+do <code>c.screwup = JButton.new "noway"</code> JRuby would explode saying that
+the <em>screwup</em> variable isn&#8217;t in that struct.</p>
+
+
+	<p>The <em>i</em> variable is just for interactions.  It&#8217;s also a struct and you
+just attach a set of hashes that point at what <em>proc</em> or <em>method</em> should
+be called when that component goes off.  For example, you could do:</p>
+
+
+<blockquote>
+<pre>
+i.message = {:changed =&gt; proc {|t,e| puts "type: #{t}, event: #{e}" } }
+</pre>
+</blockquote>
+
+	<p>This would attach a ChangeListener that when the <em>message</em> JTextField
+changed it would print out what type of event and the Event object.
+You could also do it with:</p>
+
+
+<blockquote>
+<pre>
+i.message = {:changed =&gt; method(:message_changed)}
+
+def message_changed(type, event)
+  # do stuff
+end
+</pre>
+</blockquote>
+
+	<p>This will have the <em>changed</em> event call <em>message_changed</em> on your class,
+and since it works with <strong>any</strong> ruby method using <em>method.to_proc</em> you can
+also point it at methods on other objects not just self.</p>
+
+
+	<p>Finally, you just call <em>build</em> with various options (see the <a href="/rdoc/">RDoc</a>)
+but most importantly, you have to pass <code>:args =&gt; "Simple LEL Example"</code>
+so that the JFrame gets a name.</p>
+
+
+	<h3>Now Those Buttons</h3>
+
+
+	<p>That&#8217;s your first functional <span class="caps">GUI</span>, but we need to add that <em>buttons</em>
+panel to this.  This will actually be where we nest another layout
+inside this one, and with our fancy JRuby code it&#8217;s cake (a lot easier
+than trying to nest a GroupLayout):</p>
+
+
+<blockquote>
+<pre>
+require 'profligacy/swing'
+require 'profligacy/lel'
+
+module Test
+  include_package 'javax.swing'
+  include Profligacy
+
+  layout = " 
+     [ label_1         | label3      ]
+     [ (300,300)*text1 | (150)people ]
+     [ &lt;label2         | _           ]
+     [ message         | buttons     ]
+  " 
+
+  ui = Swing::LEL.new(JFrame,layout) do |c,i|
+    c.label_1 = JLabel.new "The chat:" 
+    c.label2  = JLabel.new "What you're saying:" 
+    c.label3  = JLabel.new "The people:" 
+    c.text1   = JTextArea.new
+    c.people  = JComboBox.new
+    c.message = JTextArea.new 
+
+    c.buttons = Swing::LEL.new(JPanel, "[send|hate|quit]") do |c,i|
+      c.send    = JButton.new "Send" 
+      c.hate    = JButton.new "Hate" 
+      c.quit    = JButton.new "Quit" 
+    end.build :auto_create_container_gaps =&gt; false
+  end
+
+  ui.build(:args =&gt; "Simple LEL Example")
+end
+</pre>
+</blockquote>
+
+	<p>See where we just change <em>buttons</em> from a single JPanel to a JPanel
+with it&#8217;s own GroupLayout, <span class="caps">LEL</span> expression, and set of components?
+The only piece of code that might freak you out is:</p>
+
+
+<blockquote>
+<pre>
+    ...
+      c.quit    = JButton.new "Quit" 
+    end.build :auto_create_container_gaps =&gt; false
+</pre>
+</blockquote>
+
+	<p>Ruby is an <em>expression</em> base language, that means everything you write,
+even control structures like a do/end block, has a value you can
+modify.  In this case, the result of doing a <code>Swing::LEL.new</code> is the
+<span class="caps">LEL</span> object instance, but what we want to attach to <em>c.buttons</em> is
+the JFrame. That JFrame comes from the call to build, so just put 
+build on the <em>end</em> and presto!  The build call result is assigned
+to <em>c.buttons</em>.</p>
+
+
+	<p>Ok, fine, it&#8217;s like doing this:</p>
+
+
+<blockquote>
+<pre>
+    ...
+    lel = Swing::LEL.new(JPanel, "[send|hate|quit]") do |c,i|
+      c.send    = JButton.new "Send" 
+      c.hate    = JButton.new "Hate" 
+      c.quit    = JButton.new "Quit" 
+    end
+
+    c.buttons = lel.build :auto_create_container_gaps =&gt; false
+</pre>
+</blockquote>
+
+	<p>However that&#8217;s ugly.  Try to understand the original because it&#8217;s
+a great trick.</p>
+
+
+	<h2>Running The Sample</h2>
+
+
+	<p>Depending on how you installed Profligacy you may need to run this example
+in different ways.  The best way is to have installed Profligacy via
+RubyGems and then simply run jruby so that it loads rubygems:</p>
+
+
+	<pre><code>$ JRUBY_HOME/bin/gem install profligacy
+$ jruby -rrubygems layout_test.rb</code></pre>
+
+
+	<p>You can run all the samples this way (and you only have to install once).</p>
+
+
+	<h2>Conclusion</h2>
+
+
+	<p>Using <span class="caps">LEL</span> is still experimental, so as the Utu iHate client continues
+I&#8217;ll be refining it and improving it.  However, right now it&#8217;s pretty
+powerful and the whole Profligacy system has made many examples in
+several Swing books trivial to implement.</p>
+
+
+	<p>Suggestions are always welcome.</p>
+        </div>
+      </div>
+      <div id="footer">
+        Copyright © 2007 Zed A. Shaw. All Rights Reserved.<br/>
+        Design by <a href="http://www.mdibb.net" title="Website of Matt Dibb">Matt Dibb</a> 2006.
+      </div>
+    </div>
+  </body>
+</html>

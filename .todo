@@ -1,0 +1,47 @@
+<todo version="0.1.19">
+    <title>
+        Profligacy
+    </title>
+    <note priority="medium" time="1183148364">
+        Book flight to Vegas/DefCon.
+    </note>
+    <note priority="medium" time="1183148375" done="1183151528">
+        Contact Jim about lone star flight and hotels.
+    </note>
+    <note priority="medium" time="1183148386" done="1183151529">
+        Contact Jim about key not topic.
+    </note>
+    <note priority="medium" time="1183148392" done="1183150933">
+        Book flight to Chicago.
+    </note>
+    <note priority="medium" time="1183792109">
+        http://www.gnu.org/software/xnee/ event emulator
+    </note>
+    <note priority="medium" time="1183792819">
+        http://www.infonode.net/index.html?idw docking windows
+    </note>
+    <note priority="medium" time="1183792890">
+        http://www.swingall.com/jdock.html another dock, simpler
+    </note>
+    <note priority="medium" time="1183793023">
+        http://sdoc.sourceforge.net/wiki/pmwiki.php code highlight
+    </note>
+    <note priority="medium" time="1183793099">
+        http://bim-im.sourceforge.net/  java aim client
+    </note>
+    <note priority="medium" time="1183793447">
+        http://www.marathontesting.com/marathon testing tool
+    </note>
+    <note priority="medium" time="1183793627">
+        http://spin.sourceforge.net/ for threaded swing
+    </note>
+    <note priority="medium" time="1183793685">
+        http://www.javadocking.com/ docks again
+    </note>
+    <note priority="medium" time="1183793835">
+        http://freshmeat.net/projects/clover/ code coverage
+    </note>
+    <note priority="medium" time="1183901299">
+        http://www.abstractmachine.net/blog/processing-book/ cool language and book
+    </note>
+</todo>

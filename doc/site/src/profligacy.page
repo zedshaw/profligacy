@@ -1,0 +1,30 @@
+---
+title: docs
+inMenu: true
+directoryName: docs
+---
+h2. Where'd Profligacy Come From?
+
+I was having trouble coming up with a name for a project that
+simplified such a huge library.  The sad fact is that, after trying
+nearly every GUI system on the planet, doing a GUI with JRuby and
+Swing is pretty nice.  Just compare even the raw code for a simple
+GUI with the crap you write for Ruby/Tk, Ruby/Qt, or Ruby/GTK and
+you'll see what I mean.
+
+However, all that Java made me want to cry.  So I started working on 
+a way to simplify the work down without dumbing the power of Swing
+down too much.
+
+That's when I got a spam with the following subject line:
+
+  pasty vivacity profligacy::
+
+After looking up "profligacy":http://dictionary.reference.com/browse/profligacy and seeing:
+
+#	shameless dissoluteness.
+#	reckless extravagance.
+#	great abundance.
+
+I realized it was the perfect description of Swing *and* trying to
+use Swing to do a GUI.

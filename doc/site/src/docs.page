@@ -1,0 +1,12 @@
+---
+title: docs
+inMenu: true
+directoryName: docs
+---
+h2. API Documentation
+
+* "RDoc generated documentation":http://ihate.rubyforge.org/profligacy/rdoc/ 
+* "Samples of using Profligacy for various things":/profligacy/sample.html
+* "Extensive sample using Layout Expression Language (LEL)":/profligacy/lel.html
+
+
